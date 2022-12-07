@@ -77,8 +77,8 @@ def load(loadname: str):
     return state
 
 
-def save(savename, env, agent, i_episode, scores, scores_window, eps, save_every):
-    if i_episode % save_every == 0:
+def save(savename, env, agent, i_episode, n_episodes, scores, scores_window, eps, save_every):
+    if i_episode % save_every == 0 or i_episode == n_episodes:
         with open(f"{savename}.pt", "wb") as fh:
             pickle.dump(
                 State(
@@ -131,7 +131,7 @@ def dqn(env_name,
         scores.append(score)
         eps = max(eps_end, eps_decay * eps)
         print_info(i_episode, print_every, scores_window)
-        save(restart_name, env, agent, i_episode, scores, scores_window, eps, save_every)
+        save(restart_name, env, agent, i_episode, n_episodes, scores, scores_window, eps, save_every)
 
     print(f'\nDone in {i_episode} episodes.')
 
