@@ -4,28 +4,10 @@ import numpy as np
 from numpy import vstack
 import torch
 from torch import from_numpy
-from numba import njit
 
 
-@njit
-def collect_idx_0(experiences):
-    return [e[0] for e in experiences if e is not None]
-
-@njit
-def collect_idx_1(experiences):
-    return [e[1] for e in experiences if e is not None]
-
-@njit
-def collect_idx_2(experiences):
-    return [e[2] for e in experiences if e is not None]
-
-@njit
-def collect_idx_3(experiences):
-    return [e[3] for e in experiences if e is not None]
-
-@njit
-def collect_idx_4(experiences):
-    return [e[4] for e in experiences if e is not None]
+def collect(experiences, idx):
+    return [e[idx] for e in experiences if e is not None]
 
 
 @dataclass
@@ -56,11 +38,11 @@ class ReplayBuffer:
         """Randomly sample a batch of experiences from memory."""
         experiences = np.random.choice(self.memory, self.batch_size, replace=False)
         #
-        states = from_numpy(vstack(collect_idx_0(experiences))).float().to(self.device)
-        actions = from_numpy(vstack(collect_idx_1(experiences))).long().to(self.device)
-        rewards = from_numpy(vstack(collect_idx_2(experiences))).float().to(self.device)
-        next_states = from_numpy(vstack(collect_idx_3(experiences))).float().to(self.device)
-        dones = from_numpy(vstack(collect_idx_4(experiences)).astype(np.uint8)).float().to(self.device)
+        states = from_numpy(vstack(collect(experiences, 0))).float().to(self.device)
+        actions = from_numpy(vstack(collect(experiences, 1))).long().to(self.device)
+        rewards = from_numpy(vstack(collect(experiences, 2))).float().to(self.device)
+        next_states = from_numpy(vstack(collect(experiences, 3))).float().to(self.device)
+        dones = from_numpy(vstack(collect(experiences, 4)).astype(np.uint8)).float().to(self.device)
         #
         return (states, actions, rewards, next_states, dones)
 
