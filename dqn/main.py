@@ -1,5 +1,5 @@
 from itertools import product
-from dqn_mine import dqn
+from dqn import dqn
 from dqn_algorithms import DQN, DDQN, Dueling_DDQN
 
 N_EPISODES = 50

@@ -107,6 +107,7 @@ def dqn(env_name,
         save_every=100):
     # init env
     restart_name = get_experiment_name(env_name, algo, repeat)
+    print(f'\nRunning {restart_name}')
     state, init_from_zero_p = handle_restart(restart, restart_name)
     if init_from_zero_p:
         env, nA, nS = init_env(env_name, seed)
@@ -132,6 +133,7 @@ def dqn(env_name,
         print_info(i_episode, print_every, scores_window)
         save(restart_name, env, agent, i_episode, scores, scores_window, eps, save_every)
 
+    print(f'\nDone in {i_episode} episodes.')
 
 
 """ def dqn(env, seed, goal_fn,
