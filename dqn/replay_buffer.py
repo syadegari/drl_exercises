@@ -18,7 +18,7 @@ class ReplayBuffer:
     seed: int
 
     def __post_init__(self):
-        self.seed = np.random.seed(self.seed)
+        self.buffer_rng = np.random.default_rng(self.seed)
         self.memory = deque(maxlen=self.buffer_size)
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         
@@ -36,7 +36,7 @@ class ReplayBuffer:
 
     def sample(self):
         """Randomly sample a batch of experiences from memory."""
-        experiences = np.random.choice(self.memory, self.batch_size, replace=False)
+        experiences = self.buffer_rng.choice(self.memory, self.batch_size, replace=False)
         #
         states = from_numpy(vstack(collect(experiences, 0))).float().to(self.device)
         actions = from_numpy(vstack(collect(experiences, 1))).long().to(self.device)

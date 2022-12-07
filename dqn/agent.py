@@ -32,8 +32,8 @@ class Agent:
                  batch_size: int=64,
                  buffer_size: int=int(1e5)
                  ):
-
-
+        self.agent_rng = np.random.default_rng(seed)
+        
         self.memory = ReplayBuffer(buffer_size, action_size, batch_size, seed)
         self.qnetwork_local = algo.model(state_size, action_size, seed)
         self.qnetwork_target = algo.model(state_size, action_size, seed)
@@ -83,7 +83,7 @@ class Agent:
             state: current state
             epsilon: for epsilon-greedy algorithm
         '''
-        if np.random.binomial(1, 1 - epsilon):
+        if self.agent_rng.binomial(1, 1 - epsilon):
             self.qnetwork_local.eval()
             with torch.no_grad():
                 action_values = self.qnetwork_local(
@@ -92,7 +92,7 @@ class Agent:
             self.qnetwork_local.train()
             return np.argmax(action_values.cpu().data.numpy())
         #
-        return np.random.choice(self.action_size)
+        return self.agent_rng.choice(self.action_size)
 
     def learn(self, states, actions, rewards, next_states, dones):
         loss = self.learn_fn(
