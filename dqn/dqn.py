@@ -22,7 +22,7 @@ class State:
 
 
 def get_experiment_name(env_name, algo, repeat):
-    return f"{env_name}_{algo.name}_{repeat}"
+    return f"{env_name}_{algo.name}_{repeat}.pth"
 
 
 def init_env(env_name, seed):
@@ -72,14 +72,14 @@ def handle_restart(restart: bool, restart_name: str):
 
 
 def load(loadname: str):
-    with open(f"{loadname}.pt", "rb") as fh:
+    with open(f"{loadname}", "rb") as fh:
         state = pickle.load(fh)
     return state
 
 
 def save(savename, env, agent, i_episode, n_episodes, scores, scores_window, eps, save_every):
     if i_episode % save_every == 0 or i_episode == n_episodes:
-        with open(f"{savename}.pt", "wb") as fh:
+        with open(f"{savename}", "wb") as fh:
             pickle.dump(
                 State(
                     env=env,
