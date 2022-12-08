@@ -61,7 +61,7 @@ def handle_restart(restart: bool, restart_name: str):
     if restart:
         if os.path.exists(restart_name):
             state = load(restart_name)
-            print(f'Found restart file {restart_name}' with {state.i_episode} episodes)
+            print(f'Found restart file {restart_name} with {state.i_episode} episodes')
             print(f'Continuing from episode {state.i_episode + 1}')
             return state, False
         else:
