@@ -61,6 +61,8 @@ def handle_restart(restart: bool, restart_name: str):
     if restart:
         if os.path.exists(restart_name):
             state = load(restart_name)
+            print(f'Found restart file {restart_name}' with {state.i_episode} episodes)
+            print(f'Continuing from episode {state.i_episode + 1}')
             return state, False
         else:
             # init from zerp
@@ -109,10 +111,11 @@ def dqn(env_name,
     restart_name = get_experiment_name(env_name, algo, repeat)
     print(f'\nRunning {restart_name}')
     state, init_from_zero_p = handle_restart(restart, restart_name)
+
     if init_from_zero_p:
         env, nA, nS = init_env(env_name, seed)
-        episoide_begin = 1
         agent = Agent(algo, nS, nA, seed)
+        episoide_begin = 1
         scores, scores_window = [], deque(maxlen=scores_window_length)
         eps = eps_start
     else:
