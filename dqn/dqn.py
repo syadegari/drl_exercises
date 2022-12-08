@@ -137,7 +137,7 @@ def dqn(env_name,
         scores, scores_window = state.scores, state.scores_window
         eps = state.eps
 
-    print_init_msg(init_from_zero_p, restart_name, episode_begin, seed)
+    print_init_msg(init_from_zero_p, restart_name, episode_begin, n_episodes, seed)
 
     if episode_begin >= n_episodes:
         return
