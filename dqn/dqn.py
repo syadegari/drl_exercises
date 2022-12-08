@@ -109,7 +109,7 @@ def dqn(env_name,
         save_every=100):
     # init env
     restart_name = get_experiment_name(env_name, algo, repeat)
-    print(f'\nRunning {restart_name}')
+    print(f'\nRunning {restart_name} with seed {seed}')
     state, init_from_zero_p = handle_restart(restart, restart_name)
 
     if init_from_zero_p:
