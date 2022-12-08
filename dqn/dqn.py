@@ -118,7 +118,7 @@ def dqn(env_name,
     else:
         env = state.env
         agent = state.agent
-        episoide_begin = state.i_episode
+        episoide_begin = max(1, state.i_episode + 1)
         scores, scores_window = state.scores, state.scores_window
         eps = state.eps
 
