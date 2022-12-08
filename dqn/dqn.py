@@ -41,6 +41,19 @@ def print_info(i_episode, print_every, scores_window):
               format(i_episode, np.mean(scores_window)))
 
 
+def print_init_msg(init_from_zero_p: bool,
+                   restart_name: str,
+                   episode_begin: int,
+                   n_episodes: int,
+                   seed: int):
+    if init_from_zero_p:
+        print(f'\nRunning {restart_name} with seed {seed}')
+    elif i_episode <= n_episodes:
+        print(f'\nResuming {restart_name} from iteration {episode_begin}')
+    else:
+        print(f'This simulation is already finished. Skipping.')
+
+
 def play_episode(env, agent, max_t, eps):
     score = 0.0
     state, _ = env.reset()
@@ -109,26 +122,27 @@ def dqn(env_name,
         save_every=100):
     # init env
     restart_name = get_experiment_name(env_name, algo, repeat)
-    print(f'\nRunning {restart_name} with seed {seed}')
     state, init_from_zero_p = handle_restart(restart, restart_name)
 
     if init_from_zero_p:
         env, nA, nS = init_env(env_name, seed)
         agent = Agent(algo, nS, nA, seed)
-        episoide_begin = 1
+        episode_begin = 1
         scores, scores_window = [], deque(maxlen=scores_window_length)
         eps = eps_start
     else:
         env = state.env
         agent = state.agent
-        episoide_begin = max(1, state.i_episode + 1)
+        episode_begin = max(1, state.i_episode + 1)
         scores, scores_window = state.scores, state.scores_window
         eps = state.eps
 
-    if episoide_begin >= n_episodes:
+    print_init_msg(init_from_zero_p, restart_name, episode_begin, seed)
+
+    if episode_begin >= n_episodes:
         return
     
-    for i_episode in range(episoide_begin, n_episodes + 1):
+    for i_episode in range(episode_begin, n_episodes + 1):
         score, state = play_episode(env, agent, max_t, eps)
         scores_window.append(score)
         scores.append(score)
