@@ -13,6 +13,7 @@ import numpy as np
 
 @dataclass
 class State:
+    seed: int
     agent: Agent
     env: Any
     i_episode: int
@@ -48,7 +49,7 @@ def print_init_msg(init_from_zero_p: bool,
                    seed: int):
     if init_from_zero_p:
         print(f'\nRunning {restart_name} with seed {seed}')
-    elif i_episode <= n_episodes:
+    elif episode_begin <= n_episodes:
         print(f'\nResuming {restart_name} from iteration {episode_begin}')
     else:
         print(f'This simulation is already finished. Skipping.')
@@ -75,10 +76,9 @@ def handle_restart(restart: bool, restart_name: str):
         if os.path.exists(restart_name):
             state = load(restart_name)
             print(f'Found restart file {restart_name} with {state.i_episode} episodes')
-            print(f'Continuing from episode {state.i_episode + 1}')
             return state, False
         else:
-            # init from zerp
+            # init from zero
             return None, True
     else:
         if os.path.exists(restart_name):
@@ -92,11 +92,12 @@ def load(loadname: str):
     return state
 
 
-def save(savename, env, agent, i_episode, n_episodes, scores, scores_window, eps, save_every):
+def save(savename, env, agent, i_episode, n_episodes, scores, scores_window, eps, save_every, seed):
     if i_episode % save_every == 0 or i_episode == n_episodes:
         with open(f"{savename}", "wb") as fh:
             pickle.dump(
                 State(
+                    seed=seed,
                     env=env,
                     agent=agent,
                     i_episode=i_episode,
@@ -136,6 +137,7 @@ def dqn(env_name,
         episode_begin = max(1, state.i_episode + 1)
         scores, scores_window = state.scores, state.scores_window
         eps = state.eps
+        seed = state.seed
 
     print_init_msg(init_from_zero_p, restart_name, episode_begin, n_episodes, seed)
 
@@ -148,9 +150,9 @@ def dqn(env_name,
         scores.append(score)
         eps = max(eps_end, eps_decay * eps)
         print_info(i_episode, print_every, scores_window)
-        save(restart_name, env, agent, i_episode, n_episodes, scores, scores_window, eps, save_every)
+        save(restart_name, env, agent, i_episode, n_episodes, scores, scores_window, eps, save_every, seed)
 
-    print(f'\nDone in {i_episode} episodes.')
+    print(f'\nDone {restart_name} with {i_episode} episodes.')
 
 
 """ def dqn(env, seed, goal_fn,
