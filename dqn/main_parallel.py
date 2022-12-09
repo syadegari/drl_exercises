@@ -10,9 +10,13 @@ def dqn_aux(env_name, algo, exp_repeat, seed, n_episodes, save_every):
 
 
 def main():
-    N_EPISODES = 20
-    SAVE_EVERY_N_EPISODES = 50
+    SAVE_EVERY_N_EPISODES = 100
     env_names = ["CartPole-v1", "LunarLander-v2", "MountainCar-v0"]
+    N_EPISODES_PER_ENV = {
+        'CartPole-v1': 2000,
+        'LunarLander-v2': 800,
+        'MountainCar-v0': 400
+    }
     algos = [DQN, DDQN, Dueling_DDQN]
 
     args = list(product(env_names, algos, range(1, 4)))
@@ -30,7 +34,9 @@ def main():
                 algos,
                 exp_repeats,
                 seeds,
-                repeat(N_EPISODES, len(args)),
+                list(repeat(N_EPISODES_PER_ENV["CartPole-v1"], 9)) + \
+                list(repeat(N_EPISODES_PER_ENV["LunarLander-v2"], 9)) + \
+                list(repeat(N_EPISODES_PER_ENV["MountainCar-v0"], 9)),
                 repeat(SAVE_EVERY_N_EPISODES, len(args)),
             )
         )
